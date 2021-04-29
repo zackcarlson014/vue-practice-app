@@ -1,8 +1,20 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
     <Header/>
-    <QuestionBox/>
+
+    <b-container class="bv-example-row">
+      <b-row>
+        <b-col sm="6" offset="3">
+          <QuestionBox
+            v-if="questions.length"
+            :currentQuestion="questions[index]"
+            :questions="questions"
+            :next="next"
+          />
+        </b-col>
+      </b-row>
+    </b-container>
+    
   </div>
 </template>
 
@@ -16,6 +28,28 @@ export default {
   components: {
     Header,
     QuestionBox
+  },
+  data() {
+    return {
+      questions: [],
+      index: 0,
+    }
+  },
+  methods: {
+    next() {
+      this.index++
+    },
+  },
+  mounted: function() {
+    fetch('https://opentdb.com/api.php?amount=10&type=multiple', {
+      method: 'get',
+    })
+      .then((response) => {
+        return response.json()
+      })
+      .then((data) => {
+        this.questions = data.results
+      })
   }
 }
 </script>

@@ -2,7 +2,7 @@
     <div class="question-box-container">
         <b-jumbotron>
             <template slot="lead">
-                {{ currentQuestion.question }}
+                {{ formatedQuestion }}
             </template>
 
             <hr class="my-4" />
@@ -26,7 +26,14 @@
             >
                 Submit
             </b-button>
-            <b-button @click="next" variant="success" href="#">Next</b-button>
+            <b-button 
+                @click="next" 
+                variant="success" 
+                href="#"
+                :disabled="!answered"
+            >
+                Next
+            </b-button>
 
         </b-jumbotron>
     </div>
@@ -47,7 +54,8 @@
                 selectedIndex: null,
                 correctIndex: null,
                 shuffledAnswers: [],
-                answered: false
+                answered: false,
+                formatedQuestion: ''
             }
         },
         computed: {
@@ -64,13 +72,21 @@
                     this.selectedIndex = null
                     this.answered = false
                     this.shuffleAnswers()
+                    this.reformatQuestion()
                 }    
             }
         },
         methods: {
+            reformatQuestion() {
+                let question = this.currentQuestion.question.replaceAll("&#039;", "'").replaceAll("&quot;", "\"")
+                this.formatedQuestion = question
+            },
             shuffleAnswers() {
                 let answers = [...this.currentQuestion.incorrect_answers, this.currentQuestion.correct_answer]
-                this.shuffledAnswers = _.shuffle(answers)
+                let shuffledAnswers = _.shuffle(answers).map(answer => {
+                    return answer.replaceAll("&#039;", "'").replaceAll("&quot;", "\"")
+                })
+                this.shuffledAnswers = shuffledAnswers
                 this.correctIndex = this.shuffledAnswers.indexOf(this.currentQuestion.correct_answer)
             },
             selectAnswer(index) {

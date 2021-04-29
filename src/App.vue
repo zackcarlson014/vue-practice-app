@@ -53,7 +53,7 @@ export default {
     }
   },
   mounted: function() {
-    fetch('https://opentdb.com/api.php?amount=10&type=multiple', {
+    fetch('https://opentdb.com/api.php?amount=10&type=multiple&difficulty=hard', {
       method: 'get',
     })
       .then((response) => {
